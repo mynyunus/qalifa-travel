@@ -90,34 +90,6 @@
     });
   }
 
-  const setupDeckPreview = () => {
-    const frame = document.getElementById("deck-frame");
-    const fallback = document.getElementById("deck-fallback");
-    const openLink = document.getElementById("deck-open");
-    const downloadLink = document.getElementById("deck-download");
-    if (!frame || !fallback) return;
-
-    const deckPath = "assets/present/Qalifa%20Presentation_20250601_205728_0000.pdf";
-    const deckAbsoluteUrl = new URL(deckPath, window.location.href).href;
-
-    if (openLink) openLink.setAttribute("href", deckAbsoluteUrl);
-    if (downloadLink) downloadLink.setAttribute("href", deckAbsoluteUrl);
-
-    let loaded = false;
-    frame.addEventListener("load", () => {
-      loaded = true;
-      fallback.hidden = true;
-    });
-
-    window.setTimeout(() => {
-      if (!loaded) fallback.hidden = false;
-    }, 5500);
-
-    frame.src = `${deckAbsoluteUrl}#zoom=page-width&view=FitH`;
-  };
-
-  setupDeckPreview();
-
   if (!reduceMotion && "IntersectionObserver" in window) {
     const sections = document.querySelectorAll(".section");
     const observer = new IntersectionObserver(
