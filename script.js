@@ -1,1 +1,137 @@
-(()=>{const h=document.getElementById('site-header'),n=document.getElementById('main-nav'),t=document.getElementById('nav-toggle'),x=document.getElementById('header-cta'),p=document.getElementById('scroll-popup'),c=document.getElementById('popup-close'),r=window.matchMedia('(prefers-reduced-motion: reduce)').matches;const setHeader=()=>h&&h.classList.toggle('scrolled',window.scrollY>20);const syncHeaderActions=()=>{if(!t||!x)return;const burgerVisible=getComputedStyle(t).display!=='none';x.style.display=burgerVisible?'none':'inline-flex'};setHeader();window.addEventListener('scroll',setHeader,{passive:true});if(h&&n&&t){t.addEventListener('click',()=>{const open=h.classList.toggle('menu-open');t.setAttribute('aria-expanded',String(open));t.setAttribute('aria-label',open?'Tutup menu':'Buka menu')});n.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{h.classList.remove('menu-open');t.setAttribute('aria-expanded','false');t.setAttribute('aria-label','Buka menu')}));window.addEventListener('resize',()=>{if(window.innerWidth>=700){h.classList.remove('menu-open');t.setAttribute('aria-expanded','false');t.setAttribute('aria-label','Buka menu')}syncHeaderActions()});syncHeaderActions()}const items=[...document.querySelectorAll('[data-faq-item]')];items.forEach(item=>{const t=item.querySelector('[data-faq-trigger]');const panel=item.querySelector('[data-faq-panel]');if(!t||!panel)return;panel.style.maxHeight='0px';t.addEventListener('click',()=>{const open=item.classList.contains('active');items.forEach(i=>{i.classList.remove('active');const it=i.querySelector('[data-faq-trigger]');const ip=i.querySelector('[data-faq-panel]');if(it)it.setAttribute('aria-expanded','false');if(ip)ip.style.maxHeight='0px'});if(!open){item.classList.add('active');t.setAttribute('aria-expanded','true');panel.style.maxHeight=panel.scrollHeight+'px'}})});if(p&&!sessionStorage.getItem('popupDismissed')){const onScroll=()=>{if(window.scrollY>720){p.classList.add('show');window.removeEventListener('scroll',onScroll)}};window.addEventListener('scroll',onScroll,{passive:true})}if(c&&p)c.addEventListener('click',()=>{p.classList.remove('show');sessionStorage.setItem('popupDismissed','1')});if(!r&&'IntersectionObserver'in window){const sections=document.querySelectorAll('.section');const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('visible')),{threshold:.12});sections.forEach(s=>{s.classList.add('reveal');io.observe(s)})}})();
+(() => {
+  const header = document.getElementById("site-header");
+  const nav = document.getElementById("main-nav");
+  const navToggle = document.getElementById("nav-toggle");
+  const headerCta = document.getElementById("header-cta");
+  const popup = document.getElementById("scroll-popup");
+  const popupClose = document.getElementById("popup-close");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const setHeader = () => {
+    if (header) header.classList.toggle("scrolled", window.scrollY > 20);
+  };
+
+  const syncHeaderActions = () => {
+    if (!navToggle || !headerCta) return;
+    const burgerVisible = getComputedStyle(navToggle).display !== "none";
+    headerCta.style.display = burgerVisible ? "none" : "inline-flex";
+  };
+
+  setHeader();
+  window.addEventListener("scroll", setHeader, { passive: true });
+
+  if (header && nav && navToggle) {
+    navToggle.addEventListener("click", () => {
+      const open = header.classList.toggle("menu-open");
+      navToggle.setAttribute("aria-expanded", String(open));
+      navToggle.setAttribute("aria-label", open ? "Tutup menu" : "Buka menu");
+    });
+
+    nav.querySelectorAll("a").forEach((anchor) => {
+      anchor.addEventListener("click", () => {
+        header.classList.remove("menu-open");
+        navToggle.setAttribute("aria-expanded", "false");
+        navToggle.setAttribute("aria-label", "Buka menu");
+      });
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth >= 700) {
+        header.classList.remove("menu-open");
+        navToggle.setAttribute("aria-expanded", "false");
+        navToggle.setAttribute("aria-label", "Buka menu");
+      }
+      syncHeaderActions();
+    });
+
+    syncHeaderActions();
+  }
+
+  const faqItems = [...document.querySelectorAll("[data-faq-item]")];
+  faqItems.forEach((item) => {
+    const trigger = item.querySelector("[data-faq-trigger]");
+    const panel = item.querySelector("[data-faq-panel]");
+    if (!trigger || !panel) return;
+
+    panel.style.maxHeight = "0px";
+    trigger.addEventListener("click", () => {
+      const open = item.classList.contains("active");
+
+      faqItems.forEach((it) => {
+        it.classList.remove("active");
+        const t = it.querySelector("[data-faq-trigger]");
+        const p = it.querySelector("[data-faq-panel]");
+        if (t) t.setAttribute("aria-expanded", "false");
+        if (p) p.style.maxHeight = "0px";
+      });
+
+      if (!open) {
+        item.classList.add("active");
+        trigger.setAttribute("aria-expanded", "true");
+        panel.style.maxHeight = `${panel.scrollHeight}px`;
+      }
+    });
+  });
+
+  if (popup && !sessionStorage.getItem("popupDismissed")) {
+    const onScroll = () => {
+      if (window.scrollY > 720) {
+        popup.classList.add("show");
+        window.removeEventListener("scroll", onScroll);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  if (popup && popupClose) {
+    popupClose.addEventListener("click", () => {
+      popup.classList.remove("show");
+      sessionStorage.setItem("popupDismissed", "1");
+    });
+  }
+
+  const setupDeckPreview = () => {
+    const frame = document.getElementById("deck-frame");
+    const fallback = document.getElementById("deck-fallback");
+    const openLink = document.getElementById("deck-open");
+    const downloadLink = document.getElementById("deck-download");
+    if (!frame || !fallback) return;
+
+    const deckPath = "assets/present/Qalifa%20Presentation_20250601_205728_0000.pdf";
+    const deckAbsoluteUrl = new URL(deckPath, window.location.href).href;
+
+    if (openLink) openLink.setAttribute("href", deckAbsoluteUrl);
+    if (downloadLink) downloadLink.setAttribute("href", deckAbsoluteUrl);
+
+    let loaded = false;
+    frame.addEventListener("load", () => {
+      loaded = true;
+      fallback.hidden = true;
+    });
+
+    window.setTimeout(() => {
+      if (!loaded) fallback.hidden = false;
+    }, 5500);
+
+    frame.src = `${deckAbsoluteUrl}#zoom=page-width&view=FitH`;
+  };
+
+  setupDeckPreview();
+
+  if (!reduceMotion && "IntersectionObserver" in window) {
+    const sections = document.querySelectorAll(".section");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add("visible");
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    sections.forEach((section) => {
+      section.classList.add("reveal");
+      observer.observe(section);
+    });
+  }
+})();
